@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html ng-app="procrastinator" data-ng-csp>
+
+<head>
+<meta charset="utf-8" />
+<title>Page Stash</title>
+<base target="_blank">
+<link rel="stylesheet" type="text/css" href="css/popup.css">
+</head>
+
+<body data-ng-controller="procController">
+
+	<div id="headerPanel">
+		<p>
+			<span class="notice">{{mess}}</span> <span class="notice">{{itemConter()}}</span>
+			<span ng-click="switchMenu()" class="rightAlign clickable">&#9776;Options</span>
+		</p>
+
+		<div ng-show="showMenu">
+			<ul class="memuList">
+
+				<li>Sort by <select ng-model="order"
+					ng-options="option.value as option.name for option in orderOptions">
+				</select> <span>reverse<input type="checkbox" ng-model="reverse"></span>
+				</li>
+
+				<li>Filter by <input type="text" ng-model="filterExp">
+				</li>
+
+				<li><span>Edit title</span> <input class="titeleEditor"
+					type="text" placeholder="press 'edit' near to the title"
+					ng-disabled="disableTitleEditPane" ng-model="editableItem.title">
+					<span class="clickable" ng-hide="disableTitleEditPane"
+					ng-click="setEditableTitle(editableItem)">save</span>
+				</li>
+			</ul>
+		</div>
+
+	</div>
+
+	<div id="pagesPanel">
+
+		<p ng-show="emptyTabsObj()">
+			<span class="notice">is now empty</span>
+		</p>
+
+		<ul>
+			<li
+				ng-repeat="item in tabs | toArray : true | filter : {title: filterExp} | orderBy : order : reverse">
+
+				<p ng-init="itemTitle=item.title">
+				<div class="clearfix">
+
+					<div class="titleWrapper">
+						<span ng-click="removeAndOpen(item.$key)"
+							class="pageTitle clickable">{{item.title}}</span>
+					</div>
+					<span class="additional rightAlign clickable" ng-show="showMenu"
+						ng-click="setEditableTitle(item)">edit</span>
+
+				</div> <span class="additional">waiting from <span
+					class="creationTime tooltip">
+						{{convertTime(item.creationTime) | date: 'yyyy.M.d H:mm'}} <span
+						class="tooltipText">{{since(item.creationTime)}}</span>
+				</span>
+			</span> <span ng-click="remove(item.$key)" class="rightAlign clickable">&#x2716;</span>
+				</p>
+
+			</li>
+		</ul>
+
+	</div>
+
+	<script src="js/angular.min.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/toArrayFilter.js"></script>
+	<script src="js/dataStorage.js"></script>
+
+</body>
+
+</html>
